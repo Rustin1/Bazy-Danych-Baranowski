@@ -1,0 +1,43 @@
+CREATE TABLE id_postaci (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, nazwa VARCHAR(40), Rodzaj ENUM('wiking','ptak','kobieta'), data_ur DATE, wiek INT);
+
+INSERT INTO id_postaci (id,nazwa,Rodzaj,data_ur,wiek) VALUES(1,'Bjorn','wiking','2000-03-12',21);
+INSERT INTO id_postaci (id,nazwa,Rodzaj,data_ur,wiek) VALUES(2,'Drozd','ptak','2020-06-02',1);
+INSERT INTO id_postaci (id,nazwa,Rodzaj,data_ur,wiek) VALUES(3,'Tesciowa','kobieta','1950-08-12'71);
+
+ UPDATE id_postaci SET wiek='88' WHERE nazwa='Tesciowa'
+
+CREATE TABLE Walizka(ID INT PRIMARY KEY AUTO_INCREMENT, Pojemnosc INT, Kolor ENUM('rozowy','czerwony','teczowy','zolty'), ID_Wlasciciela INT, FOREIGN KEY (ID_Wlasciciela) REFERENCES id_postaci (ID));
+
+ALTER TABLE Walizka ADD DEFAULT 'rozowy' FOR Kolor;
+INSERT INTO Walizka(Pojemnosc,Kolor,ID_Wlasciciela) VALUES(25,'zolty',1);
+INSERT INTO Walizka(Pojemnosc,Kolor,ID_Wlasciciela) VALUES(40,'teczowy',3);
+
+CREATE TABLE izba (adres_budynku INT, nazwa_izby VARCHAR (40), metraz INT, ID_Wlasciciela INT, FOREIGN KEY (ID_Wlasciciela) REFERENCES id_postaci(ID),PRIMARY KEY (adres_budynku, nazwa_izby));
+
+ALTER TABLE izba ADD kolor varchar(20) DEFAULT ('czarny');
+INSERT INTO izba(adres_budynku,nazwa_izby, metraz,Kolor,ID_Wlasciciela) Values ( '12','Spiarnia',50,'czarwny',1);
+CREATE TABLE Przetwory(ID INT PRIMARY KEY, RokProdukcji YEAR DEFAULT '1984',IdWykonawcy INT, Zawartosc VARCHAR(100),Dodatek VARCHAR(100) DEFAULT 'papryczka chilli', IdKonsumenta INT, FOREIGN KEY (IdWykonawcy) REFERENCES id_postaci(ID), FOREIGN KEY (IdKonsumenta) REFERENCES id_postaci(ID));
+INSERT INTO Przetwory(ID,IdWykonawcy,Zawartosc,IdKonsumenta) VALUES(1,1,'Bigos',1);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (5,'John', 'wiking','1990-01-01',31);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (6,'Bern', 'wiking','1990-01-01',31);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (7,'Lukas', 'wiking','1990-01-01',31);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (8,'Eivor', 'wiking','1990-01-01',31);
+CREATE TABLE Statek(Nazwa VARCHAR(50) PRIMARY KEY, Rodzaj ENUM('plywajacy','zatopiony'),DataWodowania DATE,Ladownosc INT);
+
+
+ INSERT INTO Statek(Nazwa,Rodzaj,DataWodowania,Ladownosc) VALUES ('Merry','plywajacy','2019-11-02',20);
+INSERT INTO Statek(Nazwa,Rodzaj,DataWodowania,Ladownosc) VALUES ('Medusa','zatopiony','2021-11-02',5);
+ALTER TABLE id_postaci ADD Funkcja varchar(50);
+UPDATE id_postaci SET Funkcja = 'kapitan' WHERE nazwa = 'Bjorn';
+ALTER TABLE id_postaci ADD Statek varchar(50);
+ALTER TABLE id_postaci ADD FOREIGN KEY (Statek) REFERENCES Statek(Nazwa);
+UPDATE id_postaci SET Statek = 'Medusa' WHERE Rodzaj = 'wiking';
+UPDATE id_postaci SET Statek = 'Merry' WHERE nazwa = 'Drozd';
+DELETE FROM izba WHERE nazwa_izby = 'Spiarnia';
+DROP TABLE izba;
+
+
+
+
+
+

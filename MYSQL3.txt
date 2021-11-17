@@ -1,0 +1,106 @@
+CREATE TABLE id_postaci (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, nazwa VARCHAR(40), Rodzaj ENUM('wiking','ptak','kobieta'), data_ur DATE, wiek INT);
+
+INSERT INTO id_postaci (id,nazwa,Rodzaj,data_ur,wiek) VALUES(1,'Bjorn','wiking','2000-03-12',21);
+INSERT INTO id_postaci (id,nazwa,Rodzaj,data_ur,wiek) VALUES(2,'Drozd','ptak','2020-06-02',1);
+INSERT INTO id_postaci (id,nazwa,Rodzaj,data_ur,wiek) VALUES(3,'Tesciowa','kobieta','1950-08-12'71);
+
+ UPDATE id_postaci SET wiek='88' WHERE nazwa='Tesciowa'
+
+CREATE TABLE Walizka(ID INT PRIMARY KEY AUTO_INCREMENT, Pojemnosc INT, Kolor ENUM('rozowy','czerwony','teczowy','zolty'), ID_Wlasciciela INT, FOREIGN KEY (ID_Wlasciciela) REFERENCES id_postaci (ID));
+
+ALTER TABLE Walizka ADD DEFAULT 'rozowy' FOR Kolor;
+INSERT INTO Walizka(Pojemnosc,Kolor,ID_Wlasciciela) VALUES(25,'zolty',1);
+INSERT INTO Walizka(Pojemnosc,Kolor,ID_Wlasciciela) VALUES(40,'teczowy',3);
+
+CREATE TABLE izba (adres_budynku INT, nazwa_izby VARCHAR (40), metraz INT, ID_Wlasciciela INT, FOREIGN KEY (ID_Wlasciciela) REFERENCES id_postaci(ID),PRIMARY KEY (adres_budynku, nazwa_izby));
+
+ALTER TABLE izba ADD kolor varchar(20) DEFAULT ('czarny');
+INSERT INTO izba(adres_budynku,nazwa_izby, metraz,Kolor,ID_Wlasciciela) Values ( '12','Spiarnia',50,'czarwny',1);
+CREATE TABLE Przetwory(ID INT PRIMARY KEY, RokProdukcji YEAR DEFAULT '1984',IdWykonawcy INT, Zawartosc VARCHAR(100),Dodatek VARCHAR(100) DEFAULT 'papryczka chilli', IdKonsumenta INT, FOREIGN KEY (IdWykonawcy) REFERENCES id_postaci(ID), FOREIGN KEY (IdKonsumenta) REFERENCES id_postaci(ID));
+INSERT INTO Przetwory(ID,IdWykonawcy,Zawartosc,IdKonsumenta) VALUES(1,1,'Bigos',1);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (5,'John', 'wiking','1990-01-01',31);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (6,'Bern', 'wiking','1990-01-01',31);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (7,'Lukas', 'wiking','1990-01-01',31);
+INSERT INTO id_postaci(ID,nazwa,rodzaj,Data_Ur,wiek) VALUES (8,'Eivor', 'wiking','1990-01-01',31);
+CREATE TABLE Statek(Nazwa VARCHAR(50) PRIMARY KEY, Rodzaj ENUM('plywajacy','zatopiony'),DataWodowania DATE,Ladownosc INT);
+
+
+ INSERT INTO Statek(Nazwa,Rodzaj,DataWodowania,Ladownosc) VALUES ('Merry','plywajacy','2019-11-02',20);
+INSERT INTO Statek(Nazwa,Rodzaj,DataWodowania,Ladownosc) VALUES ('Medusa','zatopiony','2021-11-02',5);
+ALTER TABLE id_postaci ADD Funkcja varchar(50);
+UPDATE id_postaci SET Funkcja = 'kapitan' WHERE nazwa = 'Bjorn';
+ALTER TABLE id_postaci ADD Statek varchar(50);
+ALTER TABLE id_postaci ADD FOREIGN KEY (Statek) REFERENCES Statek(Nazwa);
+UPDATE id_postaci SET Statek = 'Medusa' WHERE Rodzaj = 'wiking';
+UPDATE id_postaci SET Statek = 'Merry' WHERE nazwa = 'Drozd';
+DELETE FROM izba WHERE nazwa_izby = 'Spiarnia';
+DROP TABLE izba;
+
+ALTER TABLE Walizka DROP FOREIGN KEY Walizka_ibfk_1;
+ALTER TABLE Przetwory DROP FOREIGN KEY Przetwory_ibfk_1;
+ALTER TABLE Przetwory DROP FOREIGN KEY Przetwory_ibfk_2;
+ALTER TABLE id_postaci DROP ID;
+
+ALTER TABLE id_postaci Modify id INT;
+delete from id_postaci Lukas;
+delete from id_postaci John;
+ALTER TABLE id_postaci add Pesel varchar(11) NOT NULL;
+UPDATE id_postaci SET Pesel = '12345678901' WHERE nazwa = 'Bjorn';
+UPDATE id_postaci SET Pesel = '12345778901' WHERE nazwa = 'Drozd';
+UPDATE id_postaci SET Pesel = '22345778901' WHERE nazwa = 'Tesciowa';
+UPDATE id_postaci SET Pesel = '22445778901' WHERE nazwa = 'Albert';
+UPDATE id_postaci SET Pesel = '32445455671' WHERE nazwa = 'Eivor';
+ALTER TABLE id_postaci ADD PRIMARY KEY (Pesel);
+ALTER TABLE id_postaci MODIFY COLUMN Rodzaj ENUM('wiking','ptak','kobieta', 'syrena');
+INSERT INTO id_postaci (nazwa,Rodzaj,data_ur,wiek,pesel) VALUES('Gertruda Nieszczera','syrena','2003-05-12',18,12378923465);
+UPDATE id_postaci SET Statek = 'Medusa' WHERE nazwa LIKE '%a%';
+UPDATE Statek SET Ladownosc = Ladownosc * 0.7 WHERE DataWodowania BETWEEN '1901.01.01' AND '2000.12.31';
+SELECT * FROM id_postaci WHERE wiek > 1000;
+ALTER TABLE id_postaci MODIFY COLUMN Rodzaj ENUM('wiking','ptak','kobieta', 'syrena','waz');
+INSERT INTO id_postaci (nazwa,Rodzaj,data_ur,wiek,pesel) VALUES('Waz Loko','waz','1020-05-12',1001,13374923425);
+CREATE TABLE Marynarz LIKE id_postaci;
+INSERT INTO Marynarz SELECT * FROM id_postaci WHERE Statek = 'Medusa';
+INSERT INTO Marynarz SELECT * FROM id_postaci WHERE Statek = 'Merry';
+
+UPDATE Marynarz SET Statek = NULL;
+DELETE FROM Marynarz WHERE Pesel = '22445745671';
+UPDATE id_postaci SET Statek = NULL;
+DELETE FROM Statek;
+ALTER TABLE id_postaci DROP FOREIGN KEY id_postaci_ibfk_1;
+DROP TABLE Statek;
+CREATE TABLE Zwierz(ID INT PRIMARY KEY AUTO_INCREMENT, Nazwa VARCHAR(30),Wiek INT);
+INSERT INTO Zwierz(Nazwa,Wiek) VALUES('Drozd',1);
+INSERT INTO Zwierz(Nazwa,Wiek) VALUES('Loko',1001);
+
+ CREATE TABLE kreatura SELECT * FROM wikingowie.kreatura;
+CREATE TABLE zasob SELECT * FROM wikingowie.zasob;
+CREATE TABLE ekwipunek SELECT * FROM wikingowie.ekwipunek;
+SELECT * FROM zasob;
+SELECT * FROM zasob WHERE rodzaj = 'jedzenie';
+SELECT idZasobu, ilosc FROM ekwipunek WHERE idKreatury=1 or idKreatury=3
+or idKreatury=5;
+SELECT * FROM kreatura WHERE udzwig>=50 and not rodzaj ='wiedzma';
+SELECT * FROM zasob WHERE waga BETWEEN 2 AND 5;
+SELECT * FROM kreatura WHERE udzwig BETWEEN 30 AND 70 and nazwa LIKE '%or%';
+SELECT * FROM zasob WHERE MONTH (dataPozyskania) BETWEEN 7 and 8;
+SELECT * FROM zasob WHERE NOT rodzaj= NULL ORDER by waga;
+SELECT * FROM Kreatura ORDER BY dataUr DESC LIMIT 5;
+SELECT DISTINCT rodzaj FROM zasob;
+SELECT DISTINCT nazwa, rodzaj FROM kreatura WHERE rodzaj LIKE 'wi%';
+SELECT nazwa,ilosc*waga FROM zasob WHERE YEAR(dataPozyskania) BETWEEN 2000 AND 2007;
+SELECT nazwa, ilosc*waga*0.7 as 'netto',ilosc*waga*0.3 as 'odpadki' FROM zasob WHERE rodzaj='jedzenie';
+SELECT * FROM zasob WHERE rodzaj is NULL;
+SELECT DISTINCT nazwa FROM zasob WHERE nazwa LIKE 'ba%' or nazwa LIKE '%os' ORDER BY nazwa ASC;
+
+
+
+
+
+
+
+
+
+
+
+
+
